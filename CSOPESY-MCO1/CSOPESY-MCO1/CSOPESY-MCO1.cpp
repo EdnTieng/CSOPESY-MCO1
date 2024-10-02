@@ -1,59 +1,26 @@
 #include <iostream>
 #include <cstdlib>
 #include "header.h"
-#include "ConsoleManager.h"
 
 using namespace std;
 
 int main()
 {
-    ConsoleManager consoleManager;
-    header();
     bool running = true;
-
+    header();
     while (running)
     {
         cout << "command: ";
         string user_input;
-        getline(cin, user_input);
+        cin >> user_input;
 
         if (user_input == "initialize")
         {
             cout << "executing initialize\n";
         }
-        else if (user_input.substr(0, 6) == "screen")
+        else if (user_input == "screen")
         {
-            string command = user_input.substr(7);
-            stringstream ss(command);
-            string action, name;
-            ss >> action >> name;
-
-            if (action == "-r") {
-                consoleManager.createScreen(name, "Process-" + name, 10);  // Create a new session
-            }
-            else if (action == "-s") {
-                system("cls");
-                consoleManager.displayScreen(name);  // Resume an existing session
-                while (1)
-                {
-                    cout << "command:";
-                    getline(cin, user_input);
-                    if (user_input == "exit")
-                    {
-                        system("cls");
-                        header();
-                        break;
-                    }
-
-                }
-            }
-            else if (action == "-ls") {
-                //consoleManager.listSessions();  // List all sessions
-                cout << "to be implemented lmao\n";
-            }
-            else {
-                cout << "Invalid screen option\n";
-            }
+            cout << "executing screen";
         }
         else if (user_input == "scheduler-test")
         {

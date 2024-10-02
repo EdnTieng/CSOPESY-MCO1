@@ -127,12 +127,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="ConsoleManager.cpp" />
     <ClCompile Include="CSOPESY-MCO1.cpp" />
     <ClCompile Include="header.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ConsoleManager.h" />
     <ClInclude Include="header.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
