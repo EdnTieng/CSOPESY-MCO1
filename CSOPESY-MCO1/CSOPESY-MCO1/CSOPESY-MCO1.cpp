@@ -2,11 +2,13 @@
 #include <cstdlib>
 #include "header.h"
 #include "ConsoleManager.h"
+#include "NvidiaSmi.h"
 
 using namespace std;
 
 int main()
 {
+    NvidiaSmi nvidiaSmi;
     ConsoleManager consoleManager;
     header();
     bool running = true;
@@ -54,6 +56,20 @@ int main()
             else {
                 cout << "Invalid screen option\n";
             }
+        }
+        else if (user_input == "nvidia-smi")
+        {
+            vector<Process> processes = 
+            {
+                {1234, "C", "Process1.exe", "150MiB"},
+                {5678, "G", "Process2.exe", "300MiB"},
+                {9101, "C", "Process3.exe", "100MiB"},
+                {1121, "C", "Process4.exe", "500MiB"},
+                {3141, "G", "Process56789012345678901234567890123456789012345678901234567890.exe", "400MiB"}
+            };
+
+            nvidiaSmi.displayGPUSummary();
+            nvidiaSmi.displayProcesses(processes);
         }
         else if (user_input == "scheduler-test")
         {
