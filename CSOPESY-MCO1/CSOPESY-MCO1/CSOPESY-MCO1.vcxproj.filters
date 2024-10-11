@@ -24,12 +24,30 @@
     <ClCompile Include="ConsoleManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="NvidiaSmi.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Marquee.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FCFS.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="header.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ConsoleManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="NvidiaSmi.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Marquee.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FCFS.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

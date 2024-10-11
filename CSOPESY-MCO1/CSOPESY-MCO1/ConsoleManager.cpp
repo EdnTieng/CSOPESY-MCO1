@@ -1,6 +1,12 @@
-// ConsoleManager.cpp
 #include "ConsoleManager.h"
+#include <iostream>
+#include <cstdlib>
+#include "header.h"
+#include <iomanip>
+#include <chrono>
+#include <ctime>
 
+using namespace std;
 // Screen constructor
 Screen::Screen(const std::string& name, const std::string& process_name, int current_line, int total_lines)
     : name(name), process_name(process_name), current_line(current_line), total_lines(total_lines) {
@@ -32,7 +38,23 @@ void ConsoleManager::createScreen(const std::string& name, const std::string& pr
 void ConsoleManager::displayScreen(const std::string& name) {
     for (const auto& screen : screens) {
         if (screen.name == name) {
+            string user_input;
             screen.display();
+            while (1)
+            {
+                cout << "command:";
+                getline(cin, user_input);
+                if (user_input == "exit")
+                {
+                    system("cls");
+                    header();
+                    break;
+                }
+                else
+                {
+                    cout << "Invalid Command\n";
+                }
+            }
             return;
         }
     }
@@ -45,3 +67,46 @@ void ConsoleManager::removeScreen(const std::string& name) {
         return screen.name == name;
         }), screens.end());
 }
+
+void ConsoleManager::addProcess(const std::string& process_name, const std::string& status, int coreId, const std::string& timestamp, int progress) {
+    ProcessInfo info;
+    info.name = process_name;
+    info.status = status;
+    info.coreId = coreId;
+    info.timestamp = timestamp;
+    info.progress = progress;
+    processes.push_back(info);
+}
+
+void ConsoleManager::updateProcessStatus(const std::string& process_name, const std::string& status, int progress) {
+    for (auto& process : processes) {
+        if (process.name == process_name) {
+            process.status = status;
+            process.progress = progress;
+            return;
+        }
+    }
+}
+
+void ConsoleManager::listProcesses() {
+    system("cls");
+    header();
+    cout << "------------------------------------\n";
+    cout << "Running processes:\n";
+    for (const auto& process : processes) {
+        if (process.status == "Running") {
+            cout << process.name << "\t(" << process.timestamp << ")\tCore: " << process.coreId
+                << "\tProgress: " << process.progress << "/100\n";
+        }
+    }
+    cout << "\nFinished processes:\n";
+    for (const auto& process : processes) {
+        if (process.status == "Finished") {
+            cout << process.name << "\t(" << process.timestamp << ")\tFinished \tProgress: " << process.progress << "/100\n";
+        }
+    }
+    cout << "------------------------------------\n";
+}
+
+
+

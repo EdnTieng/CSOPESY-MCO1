@@ -1,5 +1,9 @@
 ﻿  ConsoleManager.cpp
+<<<<<<< Updated upstream
   CSOPESY-MCO1.cpp
   header.cpp
   Generating Code...
   CSOPESY-MCO1.vcxproj -> C:\Users\edn\source\repos\CSOPESY-MCO1\x64\Debug\CSOPESY-MCO1.exe
+=======
+  CSOPESY-MCO1.vcxproj -> C:\Users\edn\Documents\GitHub\CSOPESY-MCO1\CSOPESY-MCO1\x64\Debug\CSOPESY-MCO1.exe
+>>>>>>> Stashed changes

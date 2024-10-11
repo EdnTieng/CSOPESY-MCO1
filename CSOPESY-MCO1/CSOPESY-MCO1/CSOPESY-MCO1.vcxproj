@@ -129,11 +129,23 @@
   <ItemGroup>
     <ClCompile Include="ConsoleManager.cpp" />
     <ClCompile Include="CSOPESY-MCO1.cpp" />
+    <ClCompile Include="FCFS.cpp" />
     <ClCompile Include="header.cpp" />
+<<<<<<< Updated upstream
+=======
+    <ClCompile Include="Marquee.cpp" />
+    <ClCompile Include="NvidiaSmi.cpp" />
+>>>>>>> Stashed changes
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ConsoleManager.h" />
+    <ClInclude Include="FCFS.h" />
     <ClInclude Include="header.h" />
+<<<<<<< Updated upstream
+=======
+    <ClInclude Include="Marquee.h" />
+    <ClInclude Include="NvidiaSmi.h" />
+>>>>>>> Stashed changes
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
