@@ -1,9 +1,10 @@
 ﻿  ConsoleManager.cpp
-<<<<<<< Updated upstream
   CSOPESY-MCO1.cpp
+  FCFS.cpp
   header.cpp
+  Marquee.cpp
+C:\Users\edn\Documents\GitHub\CSOPESY-MCO1\CSOPESY-MCO1\CSOPESY-MCO1\Marquee.cpp(34,51): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+  NvidiaSmi.cpp
   Generating Code...
-  CSOPESY-MCO1.vcxproj -> C:\Users\edn\source\repos\CSOPESY-MCO1\x64\Debug\CSOPESY-MCO1.exe
-=======
+  LINK : C:\Users\edn\Documents\GitHub\CSOPESY-MCO1\CSOPESY-MCO1\x64\Debug\CSOPESY-MCO1.exe not found or not built by the last incremental link; performing full link
   CSOPESY-MCO1.vcxproj -> C:\Users\edn\Documents\GitHub\CSOPESY-MCO1\CSOPESY-MCO1\x64\Debug\CSOPESY-MCO1.exe
->>>>>>> Stashed changes

@@ -2,23 +2,15 @@
 #include <cstdlib>
 #include "header.h"
 #include "ConsoleManager.h"
-<<<<<<< Updated upstream
-=======
 #include "NvidiaSmi.h"
 #include "FCFS.h"
 #include <vector>
->>>>>>> Stashed changes
 
 using namespace std;
 vector<ProcessInfo> processes;
 
-<<<<<<< Updated upstream
-int main()
-{
-=======
 int main() {
     //NvidiaSmi nvidiaSmi;
->>>>>>> Stashed changes
     ConsoleManager consoleManager;
     header();
     bool running = true;
@@ -80,7 +72,6 @@ int main() {
                 }
             }
         }
-<<<<<<< Updated upstream
         else if (user_input == "scheduler-test")
         {
 
@@ -101,11 +92,7 @@ int main() {
             system("cls");
             header();
         }
-        else if (user_input == "exit")
-        {
-=======
         else if (user_input == "exit") {
->>>>>>> Stashed changes
             cout << "exiting\n";
             return 0;
         }
