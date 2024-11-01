@@ -4,31 +4,6 @@
 
 using namespace std;
 
-void Process::writePrintCommand(int coreId) {
-    ofstream outFile;
-    outFile.open(filename, ios::app);
-    if (outFile.is_open()) {
-        // Get the current time
-        auto now = chrono::system_clock::to_time_t(chrono::system_clock::now());
-
-        // Thread-safe local time conversion
-        struct tm local_time;
-        localtime_s(&local_time, &now); // Use localtime_s for safety
-
-        // Create a formatted timestamp (MM/DD/YYYY, HH:MM:SS AM/PM)
-        ostringstream oss;
-        oss << put_time(&local_time, "%m/%d/%Y, %I:%M:%S %p");
-        string timestamp = oss.str();
-
-        // Write to the file with the timestamp and core info
-        outFile << "Core " << coreId << ": Print command " << printCount+1
-            << " executed at " << timestamp << "\n";
-        printCount++;
-
-        outFile.close();
-    }
-}
-
 FCFS_Scheduler::FCFS_Scheduler(int coreCount, int processCount, ConsoleManager* consoleManager)
     : coreCount(coreCount), processCount(processCount), running(false), consoleManager(consoleManager) {}
 
@@ -103,7 +78,7 @@ void FCFS_Scheduler::cpuWorker(int coreId) {
         if (process) {
             // Execute 100 print commands for each process
             for (int i = 0; i < 100; i++) {
-                process->writePrintCommand(coreId);
+                
                 this_thread::sleep_for(chrono::milliseconds(50)); // Simulate execution time
 
                 // Update ConsoleManager with progress

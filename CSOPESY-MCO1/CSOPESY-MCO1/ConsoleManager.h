@@ -1,54 +1,39 @@
 #pragma once
-// ConsoleManager.h
 #ifndef CONSOLE_MANAGER_H
 #define CONSOLE_MANAGER_H
 
 #include <vector>
 #include <string>
-#include <sstream>
-#include <ctime>
-#include <algorithm>
 
-// Process info struct
+// Process info struct to store process information
 struct ProcessInfo {
-    std::string name;
-    std::string status; // "Running" or "Finished"
-    int coreId;
-    std::string timestamp;
-    int progress; // Out of 100 (e.g., 1235/5876)
+    std::string name;       // Process name
+    std::string status;     // "Running" or "Finished"
+    int coreId;             // Core ID the process is assigned to
+    std::string timestamp;  // Start timestamp
+    int progress;           // Progress percentage (0-100)
 };
 
-// Screen class
-class Screen {
-public:
-    Screen(const std::string& name, const std::string& process_name, int current_line, int total_lines);
-    void display() const;
-
-    std::string name;
-    std::string process_name;
-    int current_line;
-    int total_lines;
-    std::string timestamp;
-};
-
-// Console Manager class
+// ConsoleManager class to manage and display process information
 class ConsoleManager {
 public:
-    void createScreen(const std::string& name, const std::string& process_name, int total_lines);
-    void displayScreen(const std::string& name);
-    void removeScreen(const std::string& name);
-    void listSessions(const std::vector<ProcessInfo>& processes); // New function to list session
-
-
+    // Adds a new process with its name, status, core ID, timestamp, and initial progress
     void addProcess(const std::string& process_name, const std::string& status, int coreId, const std::string& timestamp, int progress);
+
+    // Updates the status and progress of an existing process
     void updateProcessStatus(const std::string& process_name, const std::string& status, int progress);
-    void listProcesses();
+
+    // Lists all processes, displaying both "Running" and "Finished" processes
+    void listProcesses() const;
+
+    // Displays details of a specific process by name
+    void displayProcess(const std::string& process_name) const;
+
+    // Removes a process from the list by name
+    void removeProcess(const std::string& process_name);
 
 private:
-    std::vector<Screen> screens;
-
-    std::vector<ProcessInfo> processes; // Keep track of process information
+    std::vector<ProcessInfo> processes; // Vector to store all processes
 };
 
 #endif // CONSOLE_MANAGER_H
-

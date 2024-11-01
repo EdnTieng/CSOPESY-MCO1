@@ -5,6 +5,8 @@
 #include "NvidiaSmi.h"
 #include "FCFS.h"
 #include <vector>
+#include <iomanip> // For put_time
+#include <sstream> // For ostringstream
 
 using namespace std;
 vector<ProcessInfo> processes;
@@ -34,12 +36,23 @@ int main() {
                     string action, name;
                     ss >> action >> name;
 
+
                     if (action == "-r") {
-                        consoleManager.createScreen(name, "Process-" + name, 10);
+                        // Get the current time
+                        auto now = chrono::system_clock::to_time_t(chrono::system_clock::now());
+                        // Thread-safe local time conversion
+                        struct tm local_time;
+                        localtime_s(&local_time, &now); // Use localtime_s for safety
+                        // Create a formatted timestamp (MM/DD/YYYY, HH:MM:SS AM/PM)
+                        ostringstream oss;
+                        oss << put_time(&local_time, "%m/%d/%Y, %I:%M:%S %p");
+                        string timestamp = oss.str();
+
+                        consoleManager.addProcess(name, "Running", 1, timestamp, 0);
                     }
                     else if (action == "-s") {
                         system("cls");
-                        consoleManager.displayScreen(name);
+                        consoleManager.displayProcess(name);
                     }
                     else if (action == "-ls") {
                         consoleManager.listProcesses(); // Display all processes

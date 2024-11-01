@@ -26,7 +26,6 @@ public:
         filename = "process_" + to_string(id) + ".txt";
     }
 
-    void writePrintCommand(int coreId);
 };
 
 class FCFS_Scheduler {
