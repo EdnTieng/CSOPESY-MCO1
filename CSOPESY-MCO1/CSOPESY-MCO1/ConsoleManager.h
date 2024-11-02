@@ -12,13 +12,14 @@ struct ProcessInfo {
     int coreId;             // Core ID the process is assigned to
     std::string timestamp;  // Start timestamp
     int progress;           // Progress percentage (0-100)
+    int num_ins;
 };
 
 // ConsoleManager class to manage and display process information
 class ConsoleManager {
 public:
     // Adds a new process with its name, status, core ID, timestamp, and initial progress
-    void addProcess(const std::string& process_name, const std::string& status, int coreId, const std::string& timestamp, int progress);
+    void addProcess(const std::string& process_name, const std::string& status, int coreId, const std::string& timestamp, int progress, int num_ins);
 
     // Updates the status and progress of an existing process
     void updateProcessStatus(const std::string& process_name, const std::string& status, int progress);

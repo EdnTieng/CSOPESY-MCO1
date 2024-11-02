@@ -8,6 +8,7 @@
 #include <vector>
 #include <iomanip> // For put_time
 #include <sstream> // For ostringstream
+#include <random>  // For random number generation
 
 using namespace std;
 vector<ProcessInfo> processes;
@@ -24,9 +25,15 @@ int main() {
     int batch_process_freq;     // Batch process frequency range: 1 to 2^32
     int max_ins;                // Max instructions range: 1 to 2^32 
     int min_ins;                // Min instructions range: 1 to 2^32 
-    int delay_per_exec;         // Delay per execution range: 0 to 2^32
+    int delay_per_exec;         // Delay per execution range: 0 to 2^32 
 
-    FCFS_Scheduler scheduler(4, 10, &consoleManager);  // 4 CPU cores, 10 processes
+    // Random number generator setup
+    random_device rd;
+    mt19937 gen(rd());
+    uniform_int_distribution<> dist;
+
+    // Scheduler pointer
+    FCFS_Scheduler* scheduler = nullptr;
 
     while (running) {
         cout << "command: ";
@@ -35,9 +42,8 @@ int main() {
 
         if (user_input == "initialize") {
             cout << "executing initialize...\n";
-            initialized = true;
 
-            // Insert file reading here for the config.txt
+            // Load config file
             ifstream configFile("config.txt");
             if (configFile.is_open()) {
                 string key;
@@ -68,6 +74,8 @@ int main() {
                     }
                 }
                 configFile.close();
+
+                // Display config summary
                 cout << "Configuration loaded successfully.\n";
                 cout << "=====================================\n";
                 cout << "Number of CPUs: " << num_cpu << "\n";
@@ -78,15 +86,23 @@ int main() {
                 cout << "Maximum instructions: " << max_ins << "\n";
                 cout << "Delay per execution: " << delay_per_exec << "\n";
                 cout << "=====================================\n";
+                initialized = true;
+
+                // Initialize FCFS_Scheduler with config values
+                scheduler = new FCFS_Scheduler(num_cpu, min_ins, max_ins, &consoleManager);
+                scheduler->start();
+
+                // Set the distribution range
+                dist = uniform_int_distribution<>(min_ins, max_ins);
             }
             else {
                 cout << "Unable to open config.txt\n";
-                initialized = false;
             }
 
             while (initialized) {
                 cout << "command: ";
                 getline(cin, user_input);
+
                 if (user_input.substr(0, 6) == "screen") {
                     string command = user_input.substr(7);
                     stringstream ss(command);
@@ -94,17 +110,15 @@ int main() {
                     ss >> action >> name;
 
                     if (action == "-s") {
-                        // Get the current time
                         auto now = chrono::system_clock::to_time_t(chrono::system_clock::now());
-                        // Thread-safe local time conversion
                         struct tm local_time;
-                        localtime_s(&local_time, &now); // Use localtime_s for safety
-                        // Create a formatted timestamp (MM/DD/YYYY, HH:MM:SS AM/PM)
+                        localtime_s(&local_time, &now);
                         ostringstream oss;
                         oss << put_time(&local_time, "%m/%d/%Y, %I:%M:%S %p");
                         string timestamp = oss.str();
 
-                        consoleManager.addProcess(name, "Running", 1, timestamp, 0);
+                        int random_instructions = dist(gen);
+                        consoleManager.addProcess(name, "Running", 1, timestamp, 0, random_instructions);
                     }
                     else if (action == "-r") {
                         system("cls");
@@ -112,7 +126,7 @@ int main() {
                         consoleManager.displayProcess(name);
                     }
                     else if (action == "-ls") {
-                        consoleManager.listProcesses(); // Display all processes
+                        consoleManager.listProcesses();
                     }
                     else {
                         cout << "Invalid screen option\n";
@@ -120,11 +134,11 @@ int main() {
                 }
                 else if (user_input == "scheduler-test") {
                     cout << "Starting FCFS scheduler...\n";
-                    scheduler.start();
+                    scheduler->schedulingTestStart(true);
                 }
                 else if (user_input == "scheduler-stop") {
                     cout << "Stopping FCFS scheduler...\n";
-                    scheduler.stop();
+                    scheduler->schedulingTestStart(false);
                 }
                 else if (user_input == "report-util") {
                     cout << "executing report-util\n";
@@ -135,6 +149,9 @@ int main() {
                 }
                 else if (user_input == "exit") {
                     initialized = false;
+                    scheduler->stop();
+                    delete scheduler; // Clean up the dynamically allocated scheduler
+                    scheduler = nullptr;
                     system("cls");
                     header();
                     break;

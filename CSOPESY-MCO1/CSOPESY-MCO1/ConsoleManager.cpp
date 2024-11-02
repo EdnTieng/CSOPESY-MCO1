@@ -7,13 +7,14 @@
 using namespace std;
 
 // Adds a new process to the ConsoleManager with its initial status, core ID, timestamp, and progress
-void ConsoleManager::addProcess(const std::string& process_name, const std::string& status, int coreId, const std::string& timestamp, int progress) {
+void ConsoleManager::addProcess(const std::string& process_name, const std::string& status, int coreId, const std::string& timestamp, int progress, int num_ins) {
     ProcessInfo info;
     info.name = process_name;
     info.status = status;
     info.coreId = coreId;
     info.timestamp = timestamp;
     info.progress = progress;
+    info.num_ins = num_ins;
     processes.push_back(info);
 }
 
@@ -25,7 +26,7 @@ void ConsoleManager::displayProcess(const std::string& process_name) const {
             cout << "Status: " << process.status << "\n";
             cout << "Core ID: " << process.coreId << "\n";
             cout << "Timestamp: " << process.timestamp << "\n";
-            cout << "Progress: " << process.progress << "/100\n";
+            cout << "Progress: " << process.progress << "/"<< process.num_ins << "\n";
             return;
         }
     }
@@ -58,13 +59,13 @@ void ConsoleManager::listProcesses() const {
     for (const auto& process : processes) {
         if (process.status == "Running") {
             cout << process.name << "\t(" << process.timestamp << ")\tCore: " << process.coreId
-                << "\tProgress: " << process.progress << "/100\n";
+                << "\tProgress: " << process.progress << "/" << process.num_ins << "\n";
         }
     }
     cout << "\nFinished processes:\n";
     for (const auto& process : processes) {
         if (process.status == "Finished") {
-            cout << process.name << "\t(" << process.timestamp << ")\tFinished \tProgress: " << process.progress << "/100\n";
+            cout << process.name << "\t(" << process.timestamp << ")\tFinished \tProgress: " << process.progress << "/"<< process.num_ins <<"\n";
         }
     }
     cout << "------------------------------------\n";

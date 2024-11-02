@@ -20,6 +20,7 @@ class Process {
 public:
     int id;
     int printCount;
+    int total_ins;
     string filename;
 
     Process(int pid) : id(pid), printCount(0) {
@@ -30,17 +31,21 @@ public:
 
 class FCFS_Scheduler {
 public:
-    FCFS_Scheduler(int coreCount, int processCount, ConsoleManager* consoleManager);
+    FCFS_Scheduler(int coreCount, int min_ins, int max_ins, ConsoleManager* consoleManager);
 
     void start();
+    void schedulingTestStart(bool run);
     void stop();
 
 private:
     int coreCount;
     int processCount;
+    int min_ins;
+    int max_ins;
     atomic<bool> running;
     vector<thread> cpuWorkers;
     thread schedulerThread;
+    thread schedulingTestThread;
     queue<Process*> processQueue;
     mutex queueMutex;
     condition_variable cv;
