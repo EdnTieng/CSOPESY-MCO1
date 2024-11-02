@@ -19,14 +19,12 @@ using namespace std;
 class Process {
 public:
     int id;
-    int printCount;
+    bool dummy;
     int total_ins;
-    string filename;
+    string name;
 
-    Process(int pid) : id(pid), printCount(0) {
-        filename = "process_" + to_string(id) + ".txt";
-    }
-
+    Process(int pid) : id(pid), dummy(true) {}
+    Process(string name) : name(name), dummy(false) {}
 };
 
 class FCFS_Scheduler {
@@ -36,6 +34,7 @@ public:
     void start();
     void schedulingTestStart(bool run);
     void stop();
+    void addToQueue(string name);
 
 private:
     int coreCount;

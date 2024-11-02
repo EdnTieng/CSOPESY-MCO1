@@ -118,7 +118,7 @@ int main() {
                         string timestamp = oss.str();
 
                         int random_instructions = dist(gen);
-                        consoleManager.addProcess(name, "Running", 1, timestamp, 0, random_instructions);
+                        scheduler->addToQueue(name);
                     }
                     else if (action == "-r") {
                         system("cls");

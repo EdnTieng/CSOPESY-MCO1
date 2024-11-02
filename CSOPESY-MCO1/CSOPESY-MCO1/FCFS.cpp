@@ -96,8 +96,16 @@ void FCFS_Scheduler::cpuWorker(int coreId) {
                 std::string timestamp = oss.str();
 
                 // Add the new process with instructions to ConsoleManager
-                consoleManager->addProcess("Process_" + std::to_string(process->id), "Running", coreId, timestamp, 0, random_instructions);
-            } else {
+                if (process->dummy == true)
+                {
+                    consoleManager->addProcess("Process_" + std::to_string(process->id), "Running", coreId, timestamp, 0, random_instructions);
+                }
+                else {
+                    consoleManager->addProcess(process->name, "Running", coreId, timestamp, 0, random_instructions);
+                }
+                
+            } 
+            else {
                 cv.wait(lock);
             }
         }
@@ -105,14 +113,35 @@ void FCFS_Scheduler::cpuWorker(int coreId) {
         if (process) {
             for (int i = 0; i < process->total_ins; ++i) {
                 std::this_thread::sleep_for(std::chrono::milliseconds(50)); // Simulate execution time based on instructions
-                consoleManager->updateProcessStatus("Process_" + std::to_string(process->id), "Running", i + 1);
+                if (process->dummy == true)
+                {
+                    consoleManager->updateProcessStatus("Process_" + std::to_string(process->id), "Running", i + 1);
+                }
+                else {
+                    consoleManager->updateProcessStatus(process->name, "Running", i + 1);
+                }
+                
             }
 
-            consoleManager->updateProcessStatus("Process_" + std::to_string(process->id), "Finished", process->total_ins);
+            if (process->dummy == true)
+            {
+                consoleManager->updateProcessStatus("Process_" + std::to_string(process->id), "Finished", process->total_ins);
+            }
+            else
+            {
+                consoleManager->updateProcessStatus(process->name, "Finished", process->total_ins);
+            }
             delete process;
         }
     }
 }
 
+void FCFS_Scheduler:: addToQueue(string name)
+{
+    // Create and enqueue a new process
+    processQueue.push(new Process(name));
 
+    // Notify worker threads about the new process
+    cv.notify_all();
+}
 
