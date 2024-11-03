@@ -33,6 +33,7 @@ public:
     // Removes a process from the list by name
     void removeProcess(const std::string& process_name);
 
+    void printProcesses() const;
 private:
     std::vector<ProcessInfo> processes; // Vector to store all processes
 };

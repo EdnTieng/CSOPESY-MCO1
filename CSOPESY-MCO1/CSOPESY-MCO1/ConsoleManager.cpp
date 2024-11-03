@@ -3,6 +3,7 @@
 #include <iomanip>
 #include <sstream>
 #include <ctime>
+#include <fstream>  
 
 using namespace std;
 
@@ -76,4 +77,33 @@ void ConsoleManager::listProcesses() const {
         }
     }
     cout << "------------------------------------\n";
+}
+void ConsoleManager::printProcesses() const {
+    std::ofstream outFile("csopesy-log.txt");  // Open the file in write mode
+
+    if (!outFile) {
+        std::cerr << "Error: Could not open csopesy-log.txt for writing." << std::endl;
+        return;
+    }
+
+    outFile << "------------------------------------\n";
+    outFile << "Running processes:\n";
+    for (const auto& process : processes) {
+        if (process.status == "Running") {
+            outFile << process.name << "\t" << "\t(" << process.timestamp << ")\tCore:\t" << process.coreId
+                << "\tProgress: " << process.progress << "/" << process.num_ins << "\n";
+        }
+    }
+
+    outFile << "\nFinished processes:\n";
+    for (const auto& process : processes) {
+        if (process.status == "Finished") {
+            outFile << process.name << "\t(" << process.timestamp << ")\tFinished \tProgress: " << process.progress << "/" << process.num_ins << "\n";
+        }
+    }
+
+    outFile << "------------------------------------\n";
+    outFile.close();  // Close the file
+
+    std::cout << "Process log has been written to csopesy-log.txt." << std::endl;
 }

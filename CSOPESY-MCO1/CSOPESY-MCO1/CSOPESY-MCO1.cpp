@@ -125,6 +125,7 @@ int main() {
                 }
                 else if (user_input == "report-util") {
                     cout << "executing report-util\n";
+                    consoleManager.printProcesses();
                 }
                 else if (user_input == "clear" || user_input == "cls") {
                     system("cls");

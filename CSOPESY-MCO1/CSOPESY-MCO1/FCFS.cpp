@@ -153,7 +153,7 @@ void FCFS_Scheduler::cpuWorker(int coreId) {
 
                 // Only add assigned processes to ConsoleManager
                 if (process->dummy) {
-                    consoleManager->addProcess("Process_" + std::to_string(process->id), "Running", coreId, timestamp, process->current_ins, process->total_ins);
+                    consoleManager->addProcess("P" + std::to_string(process->id), "Running", coreId, timestamp, process->current_ins, process->total_ins);
                 }
                 else {
                     consoleManager->addProcess(process->name, "Running", coreId, timestamp, process->current_ins, process->total_ins);
@@ -168,7 +168,7 @@ void FCFS_Scheduler::cpuWorker(int coreId) {
                 std::this_thread::sleep_for(std::chrono::milliseconds(delay_per_exec));
                 process->current_ins++;
                 if (process->dummy) {
-                    consoleManager->updateProcessStatus("Process_" + std::to_string(process->id), "Running", process->current_ins);
+                    consoleManager->updateProcessStatus("P" + std::to_string(process->id), "Running", process->current_ins);
                 }
                 else {
                     consoleManager->updateProcessStatus(process->name, "Running", process->current_ins);
@@ -181,7 +181,7 @@ void FCFS_Scheduler::cpuWorker(int coreId) {
                 // Check if the process has completed
                 if (process->current_ins >= process->total_ins) {
                     if (process->dummy) {
-                        consoleManager->updateProcessStatus("Process_" + std::to_string(process->id), "Finished", process->total_ins);
+                        consoleManager->updateProcessStatus("P" + std::to_string(process->id), "Finished", process->total_ins);
                     }
                     else {
                         consoleManager->updateProcessStatus(process->name, "Finished", process->total_ins);
@@ -193,7 +193,7 @@ void FCFS_Scheduler::cpuWorker(int coreId) {
                 else if (algorithm == RR) {
                     // If Round Robin, re-queue the process if it's not finished
                     if (process->dummy) {
-                        consoleManager->updateProcessStatus("Process_" + std::to_string(process->id), "Waiting", process->total_ins);
+                        consoleManager->updateProcessStatus("P" + std::to_string(process->id), "Waiting", process->total_ins);
                     }
                     else {
                         consoleManager->updateProcessStatus(process->name, "Waiting", process->total_ins);
