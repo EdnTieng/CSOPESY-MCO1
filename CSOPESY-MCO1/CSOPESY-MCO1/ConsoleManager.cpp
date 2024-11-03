@@ -60,11 +60,12 @@ void ConsoleManager::updateProcessStatus(const std::string& process_name, const 
 
 // Lists all processes, displaying both "Running" and "Finished" processes separately
 void ConsoleManager::listProcesses() const {
+    system("cls");
     cout << "------------------------------------\n";
     cout << "Running processes:\n";
     for (const auto& process : processes) {
         if (process.status == "Running") {
-            cout << process.name << "\t(" << process.timestamp << ")\tCore: " << process.coreId
+            cout << process.name << "\t" << "\t(" << process.timestamp << ")\tCore:\t" << process.coreId
                 << "\tProgress: " << process.progress << "/" << process.num_ins << "\n";
         }
     }

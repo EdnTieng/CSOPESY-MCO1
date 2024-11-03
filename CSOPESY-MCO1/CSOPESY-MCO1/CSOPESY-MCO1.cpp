@@ -68,19 +68,7 @@ int main() {
                 }
                 configFile.close();
                 assignConfig(num_cpu, sched, quant_cycles, batch_process_freq, min_ins, max_ins, delay_per_exec);
-                // Display config summary
-                cout << "Configuration loaded successfully.\n";
-                cout << "=====================================\n";
-                cout << "Number of CPUs: " << num_cpu << "\n";
-                cout << "Scheduler type: " << sched << "\n";
-                cout << "Quantum cycles: " << quant_cycles << "\n";
-                cout << "Batch process frequency: " << batch_process_freq << "\n";
-                cout << "Minimum instructions: " << min_ins << "\n";
-                cout << "Maximum instructions: " << max_ins << "\n";
-                cout << "Delay per execution: " << delay_per_exec << "\n";
-                cout << "=====================================\n";
                 initialized = true;
-
                 
                 // Initialize FCFS_Scheduler with config values
 
