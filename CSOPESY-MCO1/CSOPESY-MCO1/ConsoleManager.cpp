@@ -7,16 +7,22 @@
 using namespace std;
 
 // Adds a new process to the ConsoleManager with its initial status, core ID, timestamp, and progress
-void ConsoleManager::addProcess(const std::string& process_name, const std::string& status, int coreId, const std::string& timestamp, int progress, int num_ins) {
-    ProcessInfo info;
-    info.name = process_name;
-    info.status = status;
-    info.coreId = coreId;
-    info.timestamp = timestamp;
-    info.progress = progress;
-    info.num_ins = num_ins;
-    processes.push_back(info);
+void ConsoleManager::addProcess(const std::string& name, const std::string& status, int coreId, const std::string& timestamp, int progress, int num_ins) {
+    for (auto& process : processes) {
+        if (process.name == name) {
+            // If the process already exists, just update its fields
+            process.status = status;
+            process.coreId = coreId;
+            process.timestamp = timestamp;
+            process.progress = progress;
+            process.num_ins = num_ins; // Might be useful to update if it changes
+            return; // Exit once the process is found and updated
+        }
+    }
+    // If it doesn't exist, create a new one
+    processes.push_back({ name, status, coreId, timestamp, progress, num_ins });
 }
+
 
 // Displays details of a specific process
 void ConsoleManager::displayProcess(const std::string& process_name) const {
@@ -65,7 +71,7 @@ void ConsoleManager::listProcesses() const {
     cout << "\nFinished processes:\n";
     for (const auto& process : processes) {
         if (process.status == "Finished") {
-            cout << process.name << "\t(" << process.timestamp << ")\tFinished \tProgress: " << process.progress << "/"<< process.num_ins <<"\n";
+            cout << process.name << "\t(" << process.timestamp << ")\tFinished \tProgress: " << process.progress << "/" << process.num_ins << "\n";
         }
     }
     cout << "------------------------------------\n";

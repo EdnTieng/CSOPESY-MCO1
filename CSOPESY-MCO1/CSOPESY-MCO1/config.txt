@@ -1,7 +1,7 @@
-num_cpu 4
-scheduler fcfs
-quantum_cycles 0
-batch_process_freq 1
-min_ins 1000
-max_ins 2000
+num_cpu 32
+scheduler rr
+quantum_cycles 1
+batch_process_freq 2
+min_ins 100
+max_ins 100
 delay_per_exec 0

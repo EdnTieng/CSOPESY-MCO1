@@ -1,14 +1,15 @@
 #include <iostream>
 #include <fstream>
 #include <cstdlib>
-#include "header.h"
-#include "ConsoleManager.h"
-#include "NvidiaSmi.h"
-#include "FCFS.h"
 #include <vector>
 #include <iomanip> // For put_time
 #include <sstream> // For ostringstream
 #include <random>  // For random number generation
+#include "header.h"
+#include "ConsoleManager.h"
+#include "NvidiaSmi.h"
+#include "FCFS.h"
+#include "Config.h"
 
 using namespace std;
 vector<ProcessInfo> processes;
@@ -18,14 +19,6 @@ int main() {
     header();
     bool running = true;
     bool initialized = false;
-
-    int num_cpu;                // Number of CPUs
-    string sched;               // Scheduler type (fcfs or rr)
-    int quant_cycles;           // Quantum cycles range: 1 to 2^32
-    int batch_process_freq;     // Batch process frequency range: 1 to 2^32
-    int max_ins;                // Max instructions range: 1 to 2^32 
-    int min_ins;                // Min instructions range: 1 to 2^32 
-    int delay_per_exec;         // Delay per execution range: 0 to 2^32 
 
     // Random number generator setup
     random_device rd;
@@ -74,7 +67,7 @@ int main() {
                     }
                 }
                 configFile.close();
-
+                assignConfig(num_cpu, sched, quant_cycles, batch_process_freq, min_ins, max_ins, delay_per_exec);
                 // Display config summary
                 cout << "Configuration loaded successfully.\n";
                 cout << "=====================================\n";
@@ -88,8 +81,10 @@ int main() {
                 cout << "=====================================\n";
                 initialized = true;
 
+                
                 // Initialize FCFS_Scheduler with config values
-                scheduler = new FCFS_Scheduler(num_cpu, min_ins, max_ins, &consoleManager);
+
+                scheduler = new FCFS_Scheduler(num_cpu, &consoleManager);
                 scheduler->start();
 
                 // Set the distribution range
@@ -149,12 +144,13 @@ int main() {
                 }
                 else if (user_input == "exit") {
                     initialized = false;
+                    
                     scheduler->stop();
+                    cout << "exiting\n";
                     delete scheduler; // Clean up the dynamically allocated scheduler
                     scheduler = nullptr;
                     system("cls");
                     header();
-                    break;
                 }
                 else {
                     cout << "Invalid Command\n";
