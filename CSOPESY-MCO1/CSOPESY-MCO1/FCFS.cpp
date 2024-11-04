@@ -39,26 +39,22 @@ void FCFS_Scheduler::start() {
 
 void FCFS_Scheduler::schedulingTestStart(bool run) {
     if (run) {
-        testRunning = true;  // Start the scheduling test loop
+        testRunning = true;
         schedulingTestThread = std::thread([this]() {
             int processId = 0;
-            while (testRunning) {  // Use testRunning to control this loop
-                // Create and enqueue a new process
-                {
+            int cpuCycles = 0;  // Initialize CPU cycles counter for process creation
+            while (testRunning) {
+                cpuCycles++;
+
+                if (cpuCycles % batch_process_freq == 0) {  // Create a process based on cpuCycles
                     std::lock_guard<std::mutex> lock(queueMutex);
                     processQueue.push(new Process(processId++));
+                    cv.notify_all();
                 }
-
-                // Notify worker threads about the new process
-                cv.notify_all();
-
-                // Delay between process creations, adjust as needed
-                std::this_thread::sleep_for(std::chrono::milliseconds(batch_process_freq));
             }
             });
     }
     else {
-        // Stop the scheduling test loop without affecting the main scheduler
         testRunning = false;
         if (schedulingTestThread.joinable()) {
             schedulingTestThread.join();
@@ -66,40 +62,32 @@ void FCFS_Scheduler::schedulingTestStart(bool run) {
     }
 }
 
+
 void FCFS_Scheduler::stop() {
     running = false; // Signal all threads to stop
-
-    {
-        std::lock_guard<std::mutex> lock(queueMutex);
-        // Clear the process queue to stop all threads from picking up new processes
-        while (!processQueue.empty()) {
-            delete processQueue.front();
-            processQueue.pop();
-        }
-    }
 
     // Notify all workers to unblock any waiting threads
     cv.notify_all();
 
     // Join the scheduler thread if it's active
+    cout << "none check\n";
     if (schedulerThread.joinable()) {
         schedulerThread.join();
     }
-    cout << "sched closing";
+    cout << "sched check\n";
     // Join the CPU worker threads
     for (auto& worker : cpuWorkers) {
         if (worker.joinable()) {
             worker.join();
         }
     }
-    cout << "CPU closing";
+    cout << "cpu check\n";
     // Join the scheduling test thread if it’s active
     if (schedulingTestThread.joinable()) {
         schedulingTestThread.join();
     }
-    cout << "schedTest closing";
+    cout << "schedTest check\n";
 }
-
 
 
 void FCFS_Scheduler::schedulerFunction() {
@@ -115,7 +103,7 @@ void FCFS_Scheduler::schedulerFunction() {
             cv.notify_all();
         }
         lock.unlock();
-        
+        std::this_thread::sleep_for(std::chrono::milliseconds(100)); // Adjust timing if needed
     }
 }
 
@@ -124,20 +112,18 @@ void FCFS_Scheduler::cpuWorker(int coreId) {
     std::mt19937 gen(rd());
     std::uniform_int_distribution<> dist(min_ins, max_ins);
 
-    while (running) {  // Outer loop checks `running` to exit
+    while (true) {
         Process* process = nullptr;
 
         {
             std::unique_lock<std::mutex> lock(queueMutex);
 
-            // Wait until there's a process to work on, or if shutdown is triggered
-            cv.wait(lock, [this, coreId] {
-                return (!processQueue.empty() && coreAvailable[coreId]) || !running;
-                });
+            // Wait for a process if none are available or if the core is busy, but also exit if `running` is false
+            cv.wait(lock, [this, coreId] { return (!processQueue.empty() && coreAvailable[coreId]) || !running; });
 
-            // Exit if `running` is false and no more processes are in the queue
+            // Exit if the scheduler is stopping
             if (!running && processQueue.empty()) {
-                return;  // Exit the loop to stop the thread
+                break;
             }
 
             if (!processQueue.empty() && coreAvailable[coreId]) {
@@ -176,8 +162,10 @@ void FCFS_Scheduler::cpuWorker(int coreId) {
         if (process) {
             int instructions_to_execute = (algorithm == RR) ? std::min(quant_cycles, process->total_ins - process->current_ins) : process->total_ins;
             for (int i = 0; i < instructions_to_execute; ++i) {
-                std::this_thread::sleep_for(std::chrono::milliseconds(delay_per_exec));
-                process->current_ins++;
+                for (int cpuCycles = 0; cpuCycles % delay_per_exec == 0; cpuCycles++) 
+                {
+                    process->current_ins++;
+                }
                 if (process->dummy) {
                     consoleManager->updateProcessStatus("P" + std::to_string(process->id), "Running", process->current_ins);
                 }
@@ -204,10 +192,10 @@ void FCFS_Scheduler::cpuWorker(int coreId) {
                 else if (algorithm == RR) {
                     // If Round Robin, re-queue the process if it's not finished
                     if (process->dummy) {
-                        consoleManager->updateProcessStatus("P" + std::to_string(process->id), "Waiting", process->total_ins);
+                        consoleManager->updateProcessStatus("P" + std::to_string(process->id), "Waiting", process->current_ins);
                     }
                     else {
-                        consoleManager->updateProcessStatus(process->name, "Waiting", process->total_ins);
+                        consoleManager->updateProcessStatus(process->name, "Waiting", process->current_ins);
                     }
                     processQueue.push(process);
                     coreAvailable[coreId] = true;
@@ -220,8 +208,6 @@ void FCFS_Scheduler::cpuWorker(int coreId) {
         }
     }
 }
-
-
 
 
 
