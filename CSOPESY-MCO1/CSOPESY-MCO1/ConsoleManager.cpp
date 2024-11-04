@@ -94,9 +94,6 @@ void ConsoleManager::updateProcessStatus(const std::string& process_name, const 
 // Lists all processes, displaying both "Running" and "Finished" processes separately
 void ConsoleManager::listProcesses() const {
     system("cls");
-    header();
-    cout << "------------------------------------\n";
-
     // Count unique cores in use for running processes
     set<int> coresInUse;
     for (const auto& process : processes) {

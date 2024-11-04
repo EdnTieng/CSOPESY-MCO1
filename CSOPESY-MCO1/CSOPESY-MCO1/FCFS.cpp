@@ -162,10 +162,8 @@ void FCFS_Scheduler::cpuWorker(int coreId) {
         if (process) {
             int instructions_to_execute = (algorithm == RR) ? std::min(quant_cycles, process->total_ins - process->current_ins) : process->total_ins;
             for (int i = 0; i < instructions_to_execute; ++i) {
-                for (int cpuCycles = 0; cpuCycles % delay_per_exec == 0; cpuCycles++) 
-                {
-                    process->current_ins++;
-                }
+                std::this_thread::sleep_for(std::chrono::milliseconds(delay_per_exec * 100));
+                process->current_ins++;
                 if (process->dummy) {
                     consoleManager->updateProcessStatus("P" + std::to_string(process->id), "Running", process->current_ins);
                 }
