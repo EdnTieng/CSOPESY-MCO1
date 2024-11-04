@@ -69,28 +69,37 @@ void FCFS_Scheduler::schedulingTestStart(bool run) {
 void FCFS_Scheduler::stop() {
     running = false; // Signal all threads to stop
 
+    {
+        std::lock_guard<std::mutex> lock(queueMutex);
+        // Clear the process queue to stop all threads from picking up new processes
+        while (!processQueue.empty()) {
+            delete processQueue.front();
+            processQueue.pop();
+        }
+    }
+
     // Notify all workers to unblock any waiting threads
     cv.notify_all();
 
     // Join the scheduler thread if it's active
-    cout << "none check\n";
     if (schedulerThread.joinable()) {
         schedulerThread.join();
     }
-    cout << "sched check\n";
+    cout << "sched closing";
     // Join the CPU worker threads
     for (auto& worker : cpuWorkers) {
         if (worker.joinable()) {
             worker.join();
         }
     }
-    cout << "cpu check\n";
+    cout << "CPU closing";
     // Join the scheduling test thread if it’s active
     if (schedulingTestThread.joinable()) {
         schedulingTestThread.join();
     }
-    cout << "schedTest check\n";
+    cout << "schedTest closing";
 }
+
 
 
 void FCFS_Scheduler::schedulerFunction() {
@@ -106,7 +115,7 @@ void FCFS_Scheduler::schedulerFunction() {
             cv.notify_all();
         }
         lock.unlock();
-        std::this_thread::sleep_for(std::chrono::milliseconds(100)); // Adjust timing if needed
+        
     }
 }
 
@@ -115,18 +124,20 @@ void FCFS_Scheduler::cpuWorker(int coreId) {
     std::mt19937 gen(rd());
     std::uniform_int_distribution<> dist(min_ins, max_ins);
 
-    while (true) {
+    while (running) {  // Outer loop checks `running` to exit
         Process* process = nullptr;
 
         {
             std::unique_lock<std::mutex> lock(queueMutex);
 
-            // Wait for a process if none are available or if the core is busy, but also exit if `running` is false
-            cv.wait(lock, [this, coreId] { return (!processQueue.empty() && coreAvailable[coreId]) || !running; });
+            // Wait until there's a process to work on, or if shutdown is triggered
+            cv.wait(lock, [this, coreId] {
+                return (!processQueue.empty() && coreAvailable[coreId]) || !running;
+                });
 
-            // Exit if the scheduler is stopping
+            // Exit if `running` is false and no more processes are in the queue
             if (!running && processQueue.empty()) {
-                break;
+                return;  // Exit the loop to stop the thread
             }
 
             if (!processQueue.empty() && coreAvailable[coreId]) {
@@ -209,6 +220,8 @@ void FCFS_Scheduler::cpuWorker(int coreId) {
         }
     }
 }
+
+
 
 
 

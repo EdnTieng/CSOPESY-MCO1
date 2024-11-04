@@ -104,8 +104,6 @@ int main() {
                         scheduler->addToQueue(name);
                     }
                     else if (action == "-r") {
-                        system("cls");
-                        header();
                         consoleManager.displayProcess(name);
                     }
                     else if (action == "-ls") {
