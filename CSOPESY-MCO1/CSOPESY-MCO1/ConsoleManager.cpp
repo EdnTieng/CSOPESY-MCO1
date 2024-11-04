@@ -149,7 +149,7 @@ void ConsoleManager::printProcesses() const {
     }
 
     int totalCores = num_cpu;  // Assuming num_cpu is the total number of cores
-    int coresInUseCount = coresInUse.size();
+    int coresInUseCount = coresInUse.size() + 1;
     double coreUsagePercentage = (static_cast<double>(coresInUseCount) / totalCores) * 100;
 
     // Write CPU utilization and core information to the file

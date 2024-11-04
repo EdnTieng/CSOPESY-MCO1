@@ -39,22 +39,26 @@ void FCFS_Scheduler::start() {
 
 void FCFS_Scheduler::schedulingTestStart(bool run) {
     if (run) {
-        testRunning = true;
+        testRunning = true;  // Start the scheduling test loop
         schedulingTestThread = std::thread([this]() {
             int processId = 0;
-            int cpuCycles = 0;  // Initialize CPU cycles counter for process creation
-            while (testRunning) {
-                cpuCycles++;
-
-                if (cpuCycles % batch_process_freq == 0) {  // Create a process based on cpuCycles
+            while (testRunning) {  // Use testRunning to control this loop
+                // Create and enqueue a new process
+                {
                     std::lock_guard<std::mutex> lock(queueMutex);
                     processQueue.push(new Process(processId++));
-                    cv.notify_all();
                 }
+
+                // Notify worker threads about the new process
+                cv.notify_all();
+
+                // Delay between process creations, adjust as needed
+                std::this_thread::sleep_for(std::chrono::milliseconds(batch_process_freq * 100));
             }
             });
     }
     else {
+        // Stop the scheduling test loop without affecting the main scheduler
         testRunning = false;
         if (schedulingTestThread.joinable()) {
             schedulingTestThread.join();
@@ -162,7 +166,7 @@ void FCFS_Scheduler::cpuWorker(int coreId) {
         if (process) {
             int instructions_to_execute = (algorithm == RR) ? std::min(quant_cycles, process->total_ins - process->current_ins) : process->total_ins;
             for (int i = 0; i < instructions_to_execute; ++i) {
-                std::this_thread::sleep_for(std::chrono::milliseconds(delay_per_exec * 100));
+                std::this_thread::sleep_for(std::chrono::milliseconds((delay_per_exec) * 100));
                 process->current_ins++;
                 if (process->dummy) {
                     consoleManager->updateProcessStatus("P" + std::to_string(process->id), "Running", process->current_ins);

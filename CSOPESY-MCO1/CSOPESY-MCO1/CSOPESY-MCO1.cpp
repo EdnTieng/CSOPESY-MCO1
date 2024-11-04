@@ -114,11 +114,11 @@ int main() {
                     }
                 }
                 else if (user_input == "scheduler-test") {
-                    cout << "Starting FCFS scheduler...\n";
+                    cout << "Starting scheduler test...\n";
                     scheduler->schedulingTestStart(true);
                 }
                 else if (user_input == "scheduler-stop") {
-                    cout << "Stopping FCFS scheduler...\n";
+                    cout << "Stopping scheduler test...\n";
                     scheduler->schedulingTestStart(false);
                 }
                 else if (user_input == "report-util") {
